@@ -1,0 +1,82 @@
+body{
+    background-color: rgb(54, 54, 56);
+    font-family: Roboto, sans-serif;
+    color: white;
+    font-size: 24px;
+}
+
+#calculator{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-style: solid;
+    border-color:aliceblue; 
+    border-radius: 1em;
+    border-width: thin;
+    box-shadow: 2px 5px 5px rgb(0, 0, 0);
+    width: 400px;
+}
+
+.display{
+    display:flex;
+    flex-direction: column;
+    width: 90%;
+    height: 100px;
+    border-style: solid;
+    border-color:aliceblue;
+    margin: 20px 0px 20px 0px;
+    box-sizing: border-box;
+    border-width: thin;
+}
+
+.calcInput{
+    align-self: flex-end;
+    font-size: 16px;
+    margin: 15px;
+}
+
+.output{
+    align-self: flex-end;
+    margin-right: 15px;
+}
+
+.extraKeys{
+    display:flex;
+    width: 90%;
+    margin: 20px 0px 20px 0px;
+    gap: 20px;
+    
+}
+
+.clear, .extra {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border: solid;
+    flex: 1;
+    height: 30px;
+    border-width: thin;
+
+}
+
+.keypad {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 90%;
+    margin-bottom: 15px;
+    
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 0 21%;
+    border-style: solid;
+    border-width: thin;
+    padding: 5px;
+    height: 65px;
+}
