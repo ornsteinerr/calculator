@@ -1,11 +1,23 @@
-const btns = document.querySelectorAll(".divide.btn");
+
+// TODO: Add button click change color effect
+
+// Change button color on hover and leave
+
+const btns = document.querySelectorAll('.btn');
 
 btns.forEach((btn) => {
-    addEventListener('mouseover', changeColor());
+    btn.addEventListener('mouseover', changeColor);
+    btn.addEventListener('mouseleave', changeColor);
 })
 
-function changeColor(){
-    this.style.backgroundColor = "rgb(255, 255, 255)";
-    console.log('triggered');
+function changeColor(e){
+    if (e.type === "mouseover"){
+        this.style.backgroundColor = "rgb(71, 185, 179)";
+    } else if (e.type === "mouseleave"){
+        const bodyColor = document.querySelector('body').style.backgroundColor;
+        this.style.backgroundColor = bodyColor;
+    }
+
+
 }
 

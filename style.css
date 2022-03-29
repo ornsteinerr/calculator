@@ -46,18 +46,7 @@ body{
     width: 90%;
     margin: 20px 0px 20px 0px;
     gap: 20px;
-    
-}
-
-.clear, .extra {
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    border: solid;
-    flex: 1;
-    height: 30px;
-    border-width: thin;
-
+    padding: 0px;
 }
 
 .keypad {
@@ -79,4 +68,8 @@ body{
     border-width: thin;
     padding: 5px;
     height: 65px;
+}
+
+.clear, .delete {
+    padding: 0px;
 }
