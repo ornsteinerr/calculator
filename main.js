@@ -1,35 +1,35 @@
 /* Calculator memory */
-let opSelected = false;
-let runningVal = 0;
 
-/* User input handler */
+let runningVal = "";
+let a = "";
+let b = "";
+let currentOp = "";
+
+/* Perform a calculation */
 
 function operate(op, a, b){
-    let val;
     switch (op){
         case "+":
-            val = add(a,b);
+            runningVal = add(a,b);
             break;
         case "-":
-            val = subtract(a,b);
+            runningVal = subtract(a,b);
             break;
         case "x":
-            val = multiply(a,b);
+            runningVal = multiply(a,b);
             break;
         case "÷":
-            val = divide(a,b);
+            runningVal = divide(a,b);
             break;
     }
-    console.log(val);
-    const output = document.querySelector('.output');
-    output.innerText = val;
+    // TODO: Clean up flags and reset numDisplay field
 }
 
 
 /* Calculator functions */
 
 function add(a, b){
-    return a + b;
+    return parseInt(a) + parseInt(b);
 }
 
 function subtract(a,b){
@@ -46,6 +46,7 @@ function divide(a,b){
 
 // TODO: Add button click change color effect
 
+/* Listeners */ 
 
 // Set keypad button listeners
 
@@ -53,19 +54,16 @@ const btns = document.querySelectorAll(".btn");
 btns.forEach((btn) => {
     btn.addEventListener('mouseover', changeColor);
     btn.addEventListener('mouseleave', changeColor);
-    btn.addEventListener('click', updateOutput);
+    btn.addEventListener('click', updateNumDisplay);
 })
 
 
-// Set equal key listener
-
-const equal = document.querySelector('.equal.btn');
-equal.addEventListener('click', operate);
-
 // Set operator key listeners
 
-const ops = document.querySelectorAll('.plus.btn, .subtract.btn, .multiply.btn, .divide.btn');
+const ops = document.querySelectorAll('.op');
 ops.forEach((op)=>{
+    op.addEventListener('mouseover', changeColor);
+    op.addEventListener('mouseleave', changeColor);
     op.addEventListener('click', parseInput);
 })
 
@@ -80,16 +78,23 @@ eBtns.forEach((eBtn) => {
 // Set clear key listener
 
 const clearBtn = document.querySelector('.clear.eBtn');
-clearBtn.addEventListener('click', clear);
+clearBtn.addEventListener('click', clearAll);
 
 // TODO: Add delete button functionality
 
-// Update display output with key value
+// Update display numDisplay with key value
 
-function updateOutput(){
-    const output = document.querySelector('.output');
+function updateNumDisplay(){
+    const numDisplay = document.querySelector('.numDisplay');
     const currentText = this.textContent;
-    output.innerText += currentText;
+    numDisplay.innerText += currentText;
+
+}
+// Update formula display
+
+function updateFormulaDisplay(a, op, b) {
+    const formulaDisplay = document.querySelector('.formulaDisplay');
+    formulaDisplay.textContent = `${a} ${op} ${b}`;
 }
 
 // Change button color on hover and leave 
@@ -103,32 +108,58 @@ function changeColor(e){
     }
 }
 
-// Clear field
+// Clear the input display
 
-function clear(){
-    const output = document.querySelector('.output');
-    output.innerText = "";
+function clearNumDisplay(){
+    const numDisplay = document.querySelector('.numDisplay');
+    numDisplay.innerText = "";
 }
 
-// Store memory
+// Restart from clean slate
+
+function clearAll(){
+
+    // Wipe variables
+    a = "";
+    b = "";
+    runningVal = 0;
+
+    // Wipe display
+    clearNumDisplay();
+    updateFormulaDisplay("","","");
+}
+
+
+// Parse inputted values when an operator is pressed
 
 function parseInput(){
 
-    const output = document.querySelector('.output');
-    outputStr = output.textContent;
+    // Grab user inputted text displayed in the numDisplay field
+    const numDisplay = document.querySelector('.numDisplay');
+    numDisplayStr = numDisplay.textContent;
 
-    // If it is the first time an operator button is pressed, allow second value to be inputted
-    if (!opSelected){
-        opSelected = true;
-    } else{
-        // When a second value is inputted, perform the calculation
-        let op = this.textContent;
-        let opPos = outputStr.indexOf(op);
-        let a = outputStr.slice(0, opPos);
-        let b = outputStr.slice(opPos + 1, outputStr.length - 1);
-        // console.log(`opPos: ${opPos}, a: ${a}, b: ${b}`);
-        operate(op, a, b);
+    if (numDisplayStr === "" && a === ""){ 
+        // Exit if user clicks on an operator without first inputting a value
+        return;
+    } else if (a === ""){ // Take first value on clean slate
+        a = numDisplayStr;
+        runningVal = 0;
+        currentOp = this.textContent;
+        updateFormulaDisplay(a, currentOp, b);
+        clearNumDisplay();
+    } else { // On subsequent calculations, perform calculation on running total
+
+        if (b === ""){
+            currentOp = this.textContent;
+            updateFormulaDisplay(a, currentOp, b);
+        } else {
+            operate(currentOp, a, b);
+            currentOp = this.textContent;
+            b = "";
+            a = runningVal;
+            updateFormulaDisplay(runningVal, currentOp, b);
+            clearNumDisplay();
+        }
+        // TODO: Figure out how to handle equals sign operator
     }
-
-
 }

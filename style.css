@@ -30,13 +30,13 @@ body{
     border-width: thin;
 }
 
-.calcInput{
+.formulaDisplay{
     align-self: flex-end;
     font-size: 16px;
     margin: 15px;
 }
 
-.output{
+.numDisplay{
     align-self: flex-end;
     margin-right: 15px;
 }
@@ -59,7 +59,7 @@ body{
     
 }
 
-.btn {
+.btn, .op{
     display: flex;
     align-items: center;
     justify-content: center;
