@@ -59,7 +59,7 @@ body{
     
 }
 
-.btn, .op{
+.btn, .op, .equal{
     display: flex;
     align-items: center;
     justify-content: center;

@@ -3,11 +3,13 @@
 let runningVal = "";
 let a = "";
 let b = "";
-let currentOp = "";
+let firstOp = "";
+let secondOp = "";
+let needsCleaning = false;
 
 /* Perform a calculation */
 
-function operate(op, a, b){
+function operate(a, op, b){
     switch (op){
         case "+":
             runningVal = add(a,b);
@@ -64,7 +66,7 @@ const ops = document.querySelectorAll('.op');
 ops.forEach((op)=>{
     op.addEventListener('mouseover', changeColor);
     op.addEventListener('mouseleave', changeColor);
-    op.addEventListener('click', parseInput);
+    op.addEventListener('click', parseCalculation);
 })
 
 // Set extra key listeners
@@ -80,6 +82,7 @@ eBtns.forEach((eBtn) => {
 const clearBtn = document.querySelector('.clear.eBtn');
 clearBtn.addEventListener('click', clearAll);
 
+
 // TODO: Add delete button functionality
 
 // Update display numDisplay with key value
@@ -87,7 +90,13 @@ clearBtn.addEventListener('click', clearAll);
 function updateNumDisplay(){
     const numDisplay = document.querySelector('.numDisplay');
     const currentText = this.textContent;
-    numDisplay.innerText += currentText;
+    if (needsCleaning === true) {
+        clearNumDisplay();
+        needsCleaning = false;
+        numDisplay.innerText += currentText;
+    } else {
+        numDisplay.innerText += currentText;
+    }
 
 }
 // Update formula display
@@ -120,9 +129,12 @@ function clearNumDisplay(){
 function clearAll(){
 
     // Wipe variables
+    runningVal = "";
     a = "";
     b = "";
-    runningVal = 0;
+    firstOp = "";
+    secondOp = "";
+    needsCleaning = false;
 
     // Wipe display
     clearNumDisplay();
@@ -132,34 +144,39 @@ function clearAll(){
 
 // Parse inputted values when an operator is pressed
 
-function parseInput(){
+function parseCalculation(){
 
-    // Grab user inputted text displayed in the numDisplay field
     const numDisplay = document.querySelector('.numDisplay');
-    numDisplayStr = numDisplay.textContent;
-
-    if (numDisplayStr === "" && a === ""){ 
-        // Exit if user clicks on an operator without first inputting a value
+    const numDisplayStr = numDisplay.textContent;
+    
+    if (numDisplayStr === "" && a === ""){ // If user presses an operator without inputting a value
         return;
-    } else if (a === ""){ // Take first value on clean slate
+    } else if (firstOp === ""){ // If the very first value is being inputted and an operator is pressed
         a = numDisplayStr;
-        runningVal = 0;
-        currentOp = this.textContent;
-        updateFormulaDisplay(a, currentOp, b);
-        clearNumDisplay();
-    } else { // On subsequent calculations, perform calculation on running total
-
-        if (b === ""){
-            currentOp = this.textContent;
-            updateFormulaDisplay(a, currentOp, b);
-        } else {
-            operate(currentOp, a, b);
-            currentOp = this.textContent;
-            b = "";
+        firstOp = this.textContent;
+        console.log("triggered");
+        updateFormulaDisplay(a, firstOp, b);
+        needsCleaning = true; // Allow the next value to override the first value shown in the display
+    } else { // For subsequent values where a following calculation is expected
+        b = numDisplayStr;
+        operate(a, firstOp, b);
+        nextOp = this.textContent; // Store the next operator
+        numDisplay.textContent = runningVal;
+        if (this.textContent === "="){ // If equals operator is pressed
+            if (firstOp === "="){
+                return;
+            }
+            // Update formula display with full formula
+            updateFormulaDisplay(a, firstOp, b); // Update display with the next operator
             a = runningVal;
-            updateFormulaDisplay(runningVal, currentOp, b);
-            clearNumDisplay();
+            firstOp = "";
+            b = "";
+        } else {
+            updateFormulaDisplay(runningVal, nextOp, ""); // Update display with the next operator
+            needsCleaning = true;
+            a = runningVal; // Prepare inputs for the next calculation
+            firstOp = nextOp;
         }
-        // TODO: Figure out how to handle equals sign operator
     }
+
 }
