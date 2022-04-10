@@ -4,8 +4,10 @@ let runningVal = "";
 let a = "";
 let b = "";
 let firstOp = "";
-let secondOp = "";
-let needsCleaning = false;
+let nextOp = "";
+let storedOp = "";
+let currentValActive = false;
+
 
 /* Perform a calculation */
 
@@ -24,7 +26,6 @@ function operate(a, op, b){
             runningVal = divide(a,b);
             break;
     }
-    // TODO: Clean up flags and reset numDisplay field
 }
 
 
@@ -90,9 +91,9 @@ clearBtn.addEventListener('click', clearAll);
 function updateNumDisplay(){
     const numDisplay = document.querySelector('.numDisplay');
     const currentText = this.textContent;
-    if (needsCleaning === true) {
+    if (currentValActive === true) {
         clearNumDisplay();
-        needsCleaning = false;
+        currentValActive = false;
         numDisplay.innerText += currentText;
     } else {
         numDisplay.innerText += currentText;
@@ -133,8 +134,8 @@ function clearAll(){
     a = "";
     b = "";
     firstOp = "";
-    secondOp = "";
-    needsCleaning = false;
+    nextOp = "";
+    currentValActive = false;
 
     // Wipe display
     clearNumDisplay();
@@ -152,31 +153,89 @@ function parseCalculation(){
     if (numDisplayStr === "" && a === ""){ // If user presses an operator without inputting a value
         return;
     } else if (firstOp === ""){ // If the very first value is being inputted and an operator is pressed
-        a = numDisplayStr;
+        a = numDisplayStr; // Grab inputted first value
         firstOp = this.textContent;
-        console.log("triggered");
         updateFormulaDisplay(a, firstOp, b);
-        needsCleaning = true; // Allow the next value to override the first value shown in the display
+        currentValActive = true; // Allow the next value to override the first value shown in the display
+    } else if (currentValActive === true) { // If user changes the operator without inputting a new value
+        firstOp = this.textContent;
+        updateFormulaDisplay(a, firstOp, "");
     } else { // For subsequent values where a following calculation is expected
-        b = numDisplayStr;
-        operate(a, firstOp, b);
-        nextOp = this.textContent; // Store the next operator
-        numDisplay.textContent = runningVal;
-        if (this.textContent === "="){ // If equals operator is pressed
-            if (firstOp === "="){
-                return;
-            }
-            // Update formula display with full formula
-            updateFormulaDisplay(a, firstOp, b); // Update display with the next operator
-            a = runningVal;
-            firstOp = "";
-            b = "";
-        } else {
+        if (this.textContent === "="){ // Handle equals operator separately
+            processEquals(numDisplayStr);
+        } else { // Process all other operators
+            b = numDisplayStr;
+            operate(a, firstOp, b);
+            nextOp = this.textContent; // Store the next operator
+            numDisplay.textContent = runningVal;
             updateFormulaDisplay(runningVal, nextOp, ""); // Update display with the next operator
-            needsCleaning = true;
-            a = runningVal; // Prepare inputs for the next calculation
+
+            // Prepare inputs for the next calculation
+            a = runningVal;
             firstOp = nextOp;
+            currentValActive = true; 
         }
+    }
+}
+
+function processEquals(numDisplayStr){
+
+    const numDisplay = document.querySelector('.numDisplay');
+    if (firstOp !== "="){
+        b = numDisplay.textContent;
+        operate(a, firstOp, b);
+        updateFormulaDisplay(a, firstOp, b);
+        numDisplay.textContent = runningVal;
+        a = runningVal;
+        storedOp = firstOp;
+        firstOp = "=";
+    } else {
+        updateFormulaDisplay(a, storedOp, b);
+        operate(a, storedOp, b);
+        numDisplay.textContent = runningVal;
+        a = runningVal;
     }
 
 }
+
+function test(){
+
+    // Unit test
+    // Clickc buttons in order of:  5 x 5 - 1 = = = = = - x 10
+
+    const numDisplay = document.querySelector('.numDisplay');
+
+    const fiveBtn = document.querySelector('.five.btn');
+    fiveBtn.click();
+
+    const multiplyOp = document.querySelector('.multiply.op');
+    multiplyOp.click();
+
+    fiveBtn.click();
+
+    const subtractOp = document.querySelector('.subtract.op');
+    subtractOp.click();
+
+    const oneBtn = document.querySelector('.one.btn');
+    oneBtn.click();
+
+    const equalOp = document.querySelector('.equal.op');
+    equalOp.click();
+    equalOp.click();
+    equalOp.click();
+    equalOp.click();
+    equalOp.click();
+
+    subtractOp.click();
+    multiplyOp.click();
+
+    const zeroBtn = document.querySelector('.zero.btn');
+    oneBtn.click();
+    zeroBtn.click();
+
+    equalOp.click();
+
+    console.log(`Expected: 200, actual: ${numDisplay.textContent}`);
+}
+
+
