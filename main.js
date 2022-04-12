@@ -60,7 +60,7 @@ btns.forEach((btn) => {
     btn.addEventListener('click', updateNumDisplay);
 })
 
-window.addEventListener('keydown', updateNumDisplay);
+window.addEventListener('keydown', getKey);
 
 // Set operator key listeners
 
@@ -87,28 +87,35 @@ clearBtn.addEventListener('click', clearAll);
 
 // TODO: Add delete button functionality
 
+// Process key values
+
+function getKey(e){
+    const key = document.querySelector(`div[data-key="${e.keyCode}"]`); // Check for keyboard keys
+    if (key !== null){
+        updateNumDisplay(key);
+    } else {
+        const numpadKey = document.querySelector(`div[data-numpad="${e.keyCode}"]`); // Check for numpad keys
+        if (numpadKey !== null){
+            if (numpadKey.classList.contains('op')){
+                parseCalculation(numpadKey); // If the key is an operator, prase the calculation
+                return;
+            }
+            updateNumDisplay(numpadKey);
+        } else {
+            return; // Return if not a valid key
+        }
+    }
+}
+
+
 // Update display numDisplay with key value
 
-function updateNumDisplay(e){
+function updateNumDisplay(key){
     const numDisplay = document.querySelector('.numDisplay');
     let currentText;
     // Handle keydown events
-    if (e.type === 'keydown'){
-        const key = document.querySelector(`div[data-key="${e.keyCode}"]`); // Check for keyboard keys
-        if (key !== null){
-            currentText = key.textContent;
-        } else {
-            const numpadKey = document.querySelector(`div[data-numpad="${e.keyCode}"]`); // Check for numpad keys
-            if (numpadKey !== null){
-                if (numpadKey.classList.contains('op')){
-                    parseCalculation(numpadKey);
-                    return;
-                }
-                currentText = numpadKey.textContent;
-            } else {
-                return; // Return if not a valid key
-            }
-        }
+    if (key.textContent !== undefined){
+        currentText = key.textContent;
     } else { // Handle mouseclick events
         currentText = this.textContent;
     }
