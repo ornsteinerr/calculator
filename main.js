@@ -60,6 +60,7 @@ btns.forEach((btn) => {
     btn.addEventListener('click', updateNumDisplay);
 })
 
+window.addEventListener('keydown', updateNumDisplay);
 
 // Set operator key listeners
 
@@ -88,9 +89,29 @@ clearBtn.addEventListener('click', clearAll);
 
 // Update display numDisplay with key value
 
-function updateNumDisplay(){
+function updateNumDisplay(e){
     const numDisplay = document.querySelector('.numDisplay');
-    const currentText = this.textContent;
+    let currentText;
+    // Handle keydown events
+    if (e.type === 'keydown'){
+        const key = document.querySelector(`div[data-key="${e.keyCode}"]`); // Check for keyboard keys
+        if (key !== null){
+            currentText = key.textContent;
+        } else {
+            const numpadKey = document.querySelector(`div[data-numpad="${e.keyCode}"]`); // Check for numpad keys
+            if (numpadKey !== null){
+                if (numpadKey.classList.contains('op')){
+                    parseCalculation(numpadKey);
+                    return;
+                }
+                currentText = numpadKey.textContent;
+            } else {
+                return; // Return if not a valid key
+            }
+        }
+    } else { // Handle mouseclick events
+        currentText = this.textContent;
+    }
     if (currentValActive === true) {
         clearNumDisplay();
         currentValActive = false;
@@ -145,8 +166,10 @@ function clearAll(){
 
 // Parse inputted values when an operator is pressed
 
-function parseCalculation(){
-
+function parseCalculation(opKey){
+    if (opKey.textContent === undefined){
+        opKey = this;
+    }
     const numDisplay = document.querySelector('.numDisplay');
     const numDisplayStr = numDisplay.textContent;
     
@@ -154,19 +177,19 @@ function parseCalculation(){
         return;
     } else if (firstOp === ""){ // If the very first value is being inputted and an operator is pressed
         a = numDisplayStr; // Grab inputted first value
-        firstOp = this.textContent;
+        firstOp = opKey.textContent;
         updateFormulaDisplay(a, firstOp, b);
         currentValActive = true; // Allow the next value to override the first value shown in the display
     } else if (currentValActive === true) { // If user changes the operator without inputting a new value
-        firstOp = this.textContent;
+        firstOp = opKey.textContent;
         updateFormulaDisplay(a, firstOp, "");
     } else { // For subsequent values where a following calculation is expected
-        if (this.textContent === "="){ // Handle equals operator separately
+        if (opKey.textContent === "="){ // Handle equals operator separately
             processEquals(numDisplayStr);
         } else { // Process all other operators
             b = numDisplayStr;
             operate(a, firstOp, b);
-            nextOp = this.textContent; // Store the next operator
+            nextOp = opKey.textContent; // Store the next operator
             numDisplay.textContent = runningVal;
             updateFormulaDisplay(runningVal, nextOp, ""); // Update display with the next operator
 
