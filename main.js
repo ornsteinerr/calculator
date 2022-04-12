@@ -84,15 +84,21 @@ eBtns.forEach((eBtn) => {
 const clearBtn = document.querySelector('.clear.eBtn');
 clearBtn.addEventListener('click', clearAll);
 
+// Set delete key listener
 
-// TODO: Add delete button functionality
+const deleteBtn = document.querySelector('.delete.eBtn');
+deleteBtn.addEventListener('click', deleteValue);
 
 // Process key values
 
 function getKey(e){
     const key = document.querySelector(`div[data-key="${e.keyCode}"]`); // Check for keyboard keys
     if (key !== null){
-        updateNumDisplay(key);
+        if (key.classList.contains('btn')){
+            updateNumDisplay(key);
+        } else if (key.classList.contains('delete')){
+            deleteValue();
+        }
     } else {
         const numpadKey = document.querySelector(`div[data-numpad="${e.keyCode}"]`); // Check for numpad keys
         if (numpadKey !== null){
@@ -100,7 +106,11 @@ function getKey(e){
                 parseCalculation(numpadKey); // If the key is an operator, prase the calculation
                 return;
             }
-            updateNumDisplay(numpadKey);
+            if (numpadKey.classList.contains('btn')){
+                updateNumDisplay(numpadKey);
+            } else if (numpadKey.classList.contains('clear')){
+                clearAll();
+            }
         } else {
             return; // Return if not a valid key
         }
@@ -168,6 +178,15 @@ function clearAll(){
     // Wipe display
     clearNumDisplay();
     updateFormulaDisplay("","","");
+}
+
+// Delete on value
+
+function deleteValue(){
+    console.log('trig');
+    const numDisplay = document.querySelector('.numDisplay');
+    numDisplayStr = numDisplay.textContent;
+    numDisplay.textContent = numDisplayStr.substring(0, numDisplayStr.length - 1);
 }
 
 
