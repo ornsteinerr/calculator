@@ -9,46 +9,6 @@ let storedOp = "";
 let currentValActive = false;
 
 
-/* Perform a calculation */
-
-function operate(a, op, b){
-    switch (op){
-        case "+":
-            runningVal = add(a,b);
-            break;
-        case "-":
-            runningVal = subtract(a,b);
-            break;
-        case "x":
-            runningVal = multiply(a,b);
-            break;
-        case "÷":
-            runningVal = divide(a,b);
-            break;
-    }
-}
-
-
-/* Calculator functions */
-
-function add(a, b){
-    return parseInt(a) + parseInt(b);
-}
-
-function subtract(a,b){
-    return a - b;
-}
-
-function multiply(a,b){
-    return a * b;
-}
-
-function divide(a,b){
-    return a / b;
-}
-
-// TODO: Add button click change color effect
-
 /* Listeners */ 
 
 // Set keypad button listeners
@@ -88,6 +48,9 @@ clearBtn.addEventListener('click', clearAll);
 
 const deleteBtn = document.querySelector('.delete.eBtn');
 deleteBtn.addEventListener('click', deleteValue);
+
+
+/* Frontend functions and handlers */ 
 
 // Process keyboard presses
 
@@ -136,13 +99,13 @@ function updateNumDisplay(key){
     }
 
 }
+
 // Update formula display
 
 function updateFormulaDisplay(a, op, b) {
     const formulaDisplay = document.querySelector('.formulaDisplay');
     formulaDisplay.textContent = `${a} ${op} ${b}`;
 }
-
 // Change button color on hover and leave 
 
 function changeColor(e){
@@ -161,22 +124,6 @@ function clearNumDisplay(){
     numDisplay.innerText = "";
 }
 
-// Restart from clean slate
-
-function clearAll(){
-
-    // Wipe variables
-    runningVal = "";
-    a = "";
-    b = "";
-    firstOp = "";
-    nextOp = "";
-    currentValActive = false;
-
-    // Wipe display
-    clearNumDisplay();
-    updateFormulaDisplay("","","");
-}
 
 // Delete last integer inputted
 
@@ -186,6 +133,26 @@ function deleteValue(){
     numDisplay.textContent = numDisplayStr.substring(0, numDisplayStr.length - 1);
 }
 
+/* Calculation processing */ 
+
+// Perform a calculation
+
+function operate(a, op, b){
+    switch (op){
+        case "+":
+            runningVal = add(a,b);
+            break;
+        case "-":
+            runningVal = subtract(a,b);
+            break;
+        case "x":
+            runningVal = multiply(a,b);
+            break;
+        case "÷":
+            runningVal = divide(a,b);
+            break;
+    }
+}
 
 // Parse inputted values when an operator is pressed
 
@@ -243,6 +210,43 @@ function processEquals(numDisplayStr){
     }
 
 }
+
+/* Calculator functions */
+
+function add(a, b){
+    return parseInt(a) + parseInt(b);
+}
+
+function subtract(a,b){
+    return a - b;
+}
+
+function multiply(a,b){
+    return a * b;
+}
+
+function divide(a,b){
+    return a / b;
+}
+
+// Restart from clean slate
+
+function clearAll(){
+
+    // Wipe variables
+    runningVal = "";
+    a = "";
+    b = "";
+    firstOp = "";
+    nextOp = "";
+    currentValActive = false;
+
+    // Wipe display
+    clearNumDisplay();
+    updateFormulaDisplay("","","");
+}
+
+/* Test scripts */ 
 
 function test(){
 
