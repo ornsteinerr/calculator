@@ -18,6 +18,8 @@ btns.forEach((btn) => {
     btn.addEventListener('mouseover', changeColor);
     btn.addEventListener('mouseleave', changeColor);
     btn.addEventListener('click', updateNumDisplay);
+    btn.addEventListener('click', addPressEffect);
+    btn.addEventListener('transitionend', removePressEffect);
 })
 
 window.addEventListener('keydown', getKey);
@@ -29,6 +31,8 @@ ops.forEach((op)=>{
     op.addEventListener('mouseover', changeColor);
     op.addEventListener('mouseleave', changeColor);
     op.addEventListener('click', parseCalculation);
+    op.addEventListener('click', addPressEffect);
+    op.addEventListener('transitionend', removePressEffect);
 })
 
 // Set extra button listeners
@@ -37,6 +41,8 @@ const eBtns = document.querySelectorAll('.eBtn');
 eBtns.forEach((eBtn) => {
     eBtn.addEventListener('mouseover', changeColor);
     eBtn.addEventListener('mouseleave', changeColor);
+    eBtn.addEventListener('click', addPressEffect);
+    eBtn.addEventListener('transitionend', removePressEffect);
 })
 
 // Set clear button listener
@@ -59,6 +65,9 @@ function getKey(e){
     if (key !== null){
         if (key.classList.contains('btn')){
             updateNumDisplay(key);
+            key.classList.add('pressed');
+        } else if (key.classList.contains('op')){
+            parseCalculation(key);
         } else if (key.classList.contains('delete')){
             deleteValue();
         }
@@ -67,10 +76,13 @@ function getKey(e){
         if (numpadKey !== null){
             if (numpadKey.classList.contains('op')){
                 parseCalculation(numpadKey); // If the key is an operator, parse the calculation
+                numpadKey.classList.add('pressed');
             } else if (numpadKey.classList.contains('btn')){
                 updateNumDisplay(numpadKey);
+                numpadKey.classList.add('pressed');
             } else if (numpadKey.classList.contains('clear')){
                 clearAll();
+                numpadKey.classList.add('pressed');
             }
         } else {
             return; // Return if not a valid key
@@ -117,13 +129,21 @@ function changeColor(e){
     }
 }
 
+function removePressEffect(e){
+    e.target.classList.remove('pressed');
+}
+
+function addPressEffect(e){
+    e.target.classList.add('pressed');
+}
+
+
 // Clear the input display
 
 function clearNumDisplay(){
     const numDisplay = document.querySelector('.numDisplay');
     numDisplay.innerText = "";
 }
-
 
 // Delete last integer inputted
 

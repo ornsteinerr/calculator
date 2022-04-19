@@ -68,6 +68,7 @@ body{
     border-width: thin;
     padding: 5px;
     height: 65px;
+    transition: all .1s ease;
 }
 
 .clear, .delete {
@@ -80,4 +81,11 @@ body{
     padding: 5px;
     height: 65px;
     padding: 0px;
+    transition: all .1s ease;
+}
+
+.pressed {
+    transform: scale(1.2);
+    border-color:aqua;
+    box-shadow: 0 0 1rem #eeede9;
 }
