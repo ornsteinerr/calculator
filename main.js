@@ -62,7 +62,7 @@ btns.forEach((btn) => {
 
 window.addEventListener('keydown', getKey);
 
-// Set operator key listeners
+// Set operator button listeners
 
 const ops = document.querySelectorAll('.op');
 ops.forEach((op)=>{
@@ -71,7 +71,7 @@ ops.forEach((op)=>{
     op.addEventListener('click', parseCalculation);
 })
 
-// Set extra key listeners
+// Set extra button listeners
 
 const eBtns = document.querySelectorAll('.eBtn');
 eBtns.forEach((eBtn) => {
@@ -79,17 +79,17 @@ eBtns.forEach((eBtn) => {
     eBtn.addEventListener('mouseleave', changeColor);
 })
 
-// Set clear key listener
+// Set clear button listener
 
 const clearBtn = document.querySelector('.clear.eBtn');
 clearBtn.addEventListener('click', clearAll);
 
-// Set delete key listener
+// Set delete button listener
 
 const deleteBtn = document.querySelector('.delete.eBtn');
 deleteBtn.addEventListener('click', deleteValue);
 
-// Process key values
+// Process keyboard presses
 
 function getKey(e){
     const key = document.querySelector(`div[data-key="${e.keyCode}"]`); // Check for keyboard keys
@@ -103,10 +103,8 @@ function getKey(e){
         const numpadKey = document.querySelector(`div[data-numpad="${e.keyCode}"]`); // Check for numpad keys
         if (numpadKey !== null){
             if (numpadKey.classList.contains('op')){
-                parseCalculation(numpadKey); // If the key is an operator, prase the calculation
-                return;
-            }
-            if (numpadKey.classList.contains('btn')){
+                parseCalculation(numpadKey); // If the key is an operator, parse the calculation
+            } else if (numpadKey.classList.contains('btn')){
                 updateNumDisplay(numpadKey);
             } else if (numpadKey.classList.contains('clear')){
                 clearAll();
@@ -180,10 +178,9 @@ function clearAll(){
     updateFormulaDisplay("","","");
 }
 
-// Delete on value
+// Delete last integer inputted
 
 function deleteValue(){
-    console.log('trig');
     const numDisplay = document.querySelector('.numDisplay');
     numDisplayStr = numDisplay.textContent;
     numDisplay.textContent = numDisplayStr.substring(0, numDisplayStr.length - 1);
